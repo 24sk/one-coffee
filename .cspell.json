@@ -1,0 +1,12 @@
+{
+  "version": "0.2",
+  "words": ["nuxt", "vueuse", "nuxi", "nitropack", "lucide", "supabase", "slideover", "reka"],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "package-lock.json",
+    "package.json",
+    "*.env",
+    "nuxt.config.ts"
+  ]
+}
