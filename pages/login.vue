@@ -10,7 +10,6 @@ const { baseUrl } = useRuntimeConfig().public;
 
 /** Googleログイン */
 const loginWithGoogle = async () => {
-  console.log('Googleログイン:', `${baseUrl}/auth/callback`);
   isLoading.value = true;
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
