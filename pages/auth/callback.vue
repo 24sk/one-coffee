@@ -6,11 +6,15 @@ definePageMeta({
 const user = useSupabaseUser();
 const router = useRouter();
 
-watchEffect(() => {
-  if (user.value) {
-    router.replace('/user');
-  }
-});
+watch(
+  user,
+  () => {
+    if (user.value) {
+      router.replace('/user');
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <
