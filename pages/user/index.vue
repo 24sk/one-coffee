@@ -35,9 +35,6 @@ const goToNext = () => {
 
 <template>
   <div class="space-y-6 p-6">
-    <!-- ヘッダー -->
-    <header class="text-2xl font-bold">今日の気分は？</header>
-
     <!-- 気分タグ -->
     <div class="flex flex-wrap gap-3">
       <UBadge
