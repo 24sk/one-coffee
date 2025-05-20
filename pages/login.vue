@@ -8,6 +8,9 @@ const isLoading = ref(false);
 const toast = useToast();
 const { baseUrl } = useRuntimeConfig().public;
 
+/** 利用規約に同意したかどうか */
+const agreedToTerms = ref(false);
+
 /** Googleログイン */
 const loginWithGoogle = async () => {
   isLoading.value = true;
@@ -37,10 +40,20 @@ const loginWithGoogle = async () => {
     <!-- 見出しと説明文 -->
     <div class="space-y-2">
       <h1 class="text-2xl font-bold">One Coffeeへようこそ</h1>
-      <p class="text-sm whitespace-nowrap text-gray-500">
-        愛犬バリスタと一緒に、今日の気分を選びましょう。
+      <p class="text-xs whitespace-nowrap text-gray-500">
+        愛犬バリスタと一緒に、今日のコーヒーを選びましょう。
       </p>
     </div>
+
+    <!-- 利用規約に同意するチェックボックス -->
+    <UTooltip arrow text="データはAIの学習目的で活用されます" class="max-w-xs text-left">
+      <UCheckbox
+        v-model="agreedToTerms"
+        label="利用規約に同意する"
+        class="text-sm text-gray-600"
+        size="sm"
+      />
+    </UTooltip>
 
     <!-- Googleログインボタン -->
     <UButton
@@ -49,6 +62,7 @@ const loginWithGoogle = async () => {
       icon="i-simple-icons-google"
       :loading="isLoading"
       @click="loginWithGoogle"
+      :disabled="!agreedToTerms"
     >
       Googleでログイン
     </UButton>
