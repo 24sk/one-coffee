@@ -31,7 +31,7 @@ const items = computed(() => [
     <!-- 上部ヘッダー -->
     <UHeader mode="slideover" to="/">
       <template #title>
-        <h1 class="text-xl font-bold text-gray-900">One Coffee</h1>
+        <h1 class="text-2xl font-bold text-gray-900">One Coffee</h1>
       </template>
 
       <template #right>
