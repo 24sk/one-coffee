@@ -10,3 +10,8 @@ export interface ApiData {
   url: string;
   opts?: APIOption;
 }
+
+/** APIデータ（ボディ付き） */
+export interface ApiDataWithBody<B = unknown> extends ApiData {
+  body: B;
+}

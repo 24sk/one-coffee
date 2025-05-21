@@ -2,6 +2,7 @@
 import type { MoodList } from '~/types';
 
 const router = useRouter();
+const moodStore = useMoodStore();
 
 const { data: moods } = useApiData<MoodList>({
   key: 'moods',
@@ -13,6 +14,10 @@ const { data: moods } = useApiData<MoodList>({
 
 const selectedMoods = ref<Set<string>>(new Set());
 
+/**
+ * 気分タグを選択する
+ * @param value 気分タグの値
+ */
 const toggleMood = (value: string) => {
   if (selectedMoods.value.has(value)) {
     selectedMoods.value.delete(value);
@@ -21,13 +26,13 @@ const toggleMood = (value: string) => {
   }
 };
 
+/** 気分タグを選択した後、次のページに遷移する */
 const goToNext = () => {
   if (selectedMoods.value.size > 0) {
+    // 選択した気分タグをストアに保存
+    moodStore.setSelectedMoods(Array.from(selectedMoods.value));
     router.push({
       path: '/user/recommend',
-      query: {
-        moods: Array.from(selectedMoods.value).join(','),
-      },
     });
   }
 };
@@ -39,7 +44,7 @@ const goToNext = () => {
     <div class="flex flex-wrap gap-3">
       <UBadge
         v-for="mood in moods"
-        :key="mood.value"
+        :key="mood.id"
         class="cursor-pointer font-bold transition-all duration-200"
         :class="
           selectedMoods.has(mood.value)

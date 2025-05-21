@@ -46,14 +46,14 @@ const loginWithGoogle = async () => {
     </div>
 
     <!-- 利用規約に同意するチェックボックス -->
-    <UTooltip arrow text="データはAIの学習目的で活用されます" class="max-w-xs text-left">
-      <UCheckbox
-        v-model="agreedToTerms"
-        label="利用規約に同意する"
-        class="text-sm text-gray-600"
-        size="sm"
-      />
-    </UTooltip>
+    <UCheckbox
+      v-model="agreedToTerms"
+      label="利用規約に同意する"
+      class="text-sm text-gray-600"
+      size="sm"
+    />
+    <!-- 注記 -->
+    <small class="text-xs text-gray-500">データはAIの学習目的で活用されます</small>
 
     <!-- Googleログインボタン -->
     <UButton
