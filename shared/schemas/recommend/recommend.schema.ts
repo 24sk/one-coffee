@@ -6,6 +6,7 @@ export const recommendRequestSchema = z.object({
 
 export const recommendResponseSchema = z.object({
   coffeeName: z.string(),
+  subtitle: z.string(),
   beans: z.array(
     z.object({
       origin: z.string(),
@@ -13,6 +14,9 @@ export const recommendResponseSchema = z.object({
     })
   ),
   roast: z.string(),
+  roastLevel: z.number(),
+  acidity: z.number(),
+  body: z.number(),
   toppings: z.array(z.string()),
   comment: z.string(),
 });

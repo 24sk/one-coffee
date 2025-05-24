@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { RecommendResponse } from '~/types/recommend';
+import BaseSection from '~/components/BaseSection.vue';
 
 const moodStore = useMoodStore();
 
-// Composableを使用したPOST呼び出し
 const {
   data: recommendation,
   pending: isLoading,
@@ -11,46 +11,140 @@ const {
 } = useApiDataWithBody<RecommendResponse, { moods: string[] }>({
   key: 'recommendation',
   url: '/api/recommend',
-  body: { moods: moodStore.selected },
-  opts: {
-    immediate: true,
-    server: false,
-  },
+  body: { moods: moodStore.selectedMoods },
+  opts: { immediate: true, server: false },
 });
+
+const getBeanColor = (index: number): string => {
+  const colors = ['#C0D6DF', '#AEC3B0', '#FFD6A5', '#FFADAD', '#CAFFBF'];
+  return colors[index % colors.length];
+};
 </script>
 
 <template>
-  <div class="space-y-6 p-6">
-    <div v-if="isLoading">
-      <p class="text-gray-500">バリスタがコーヒーを準備中です...</p>
+  <UContainer>
+    <UCard v-if="recommendation" class="mx-auto max-w-2xl space-y-6 rounded-2xl shadow-lg">
+      <!-- ヘッダー -->
+      <template #header>
+        <div class="space-y-1 text-center">
+          <h2 class="text-2xl font-bold text-gray-900">
+            <UIcon name="i-lucide-coffee" class="text-brown-500 mr-2 inline" />
+            {{ recommendation.coffeeName }}
+          </h2>
+          <UBadge color="primary" variant="outline" class="rounded-full font-bold">
+            {{ recommendation.roast }} / ホット / アイス
+          </UBadge>
+        </div>
+      </template>
+
+      <!-- 説明 -->
+      <BaseSection title="商品説明" icon="i-lucide-message-square-text">
+        <h4 class="mb-1 text-center text-base font-semibold text-gray-800">
+          {{ recommendation.subtitle }}
+        </h4>
+        <p class="text-left text-sm leading-relaxed text-gray-700">
+          {{ recommendation.comment }}
+        </p>
+      </BaseSection>
+
+      <!-- 味わいの特徴 -->
+      <BaseSection title="味わいの特徴" icon="i-lucide-bean">
+        <!-- コーヒー豆比率 -->
+        <!-- コーヒー豆比率 -->
+        <div class="mb-6">
+          <h4 class="mb-2 text-sm font-semibold text-gray-800">コーヒー豆のブレンド比率</h4>
+          <div
+            class="flex h-6 w-full overflow-hidden rounded-full border border-gray-200 bg-gray-100 shadow-sm"
+          >
+            <span
+              v-for="(bean, index) in recommendation.beans"
+              :key="index"
+              class="flex h-full items-center justify-center px-1 text-[10px] font-medium whitespace-nowrap text-gray-900"
+              :style="{
+                width: bean.ratio + '%',
+                backgroundColor: getBeanColor(index),
+              }"
+            >
+              {{ bean.origin }} {{ Math.round(bean.ratio) }}%
+            </span>
+          </div>
+        </div>
+
+        <!-- スライダー項目 -->
+        <div class="grid gap-5">
+          <div
+            v-for="item in [
+              {
+                label: 'ロースト',
+                value: recommendation.roastLevel,
+                minLabel: 'LIGHT',
+                maxLabel: 'DARK',
+              },
+              { label: '酸味', value: recommendation.acidity, minLabel: 'LOW', maxLabel: 'HIGH' },
+              { label: 'コク', value: recommendation.body, minLabel: 'LIGHT', maxLabel: 'FULL' },
+            ]"
+            :key="item.label"
+          >
+            <h4 class="mb-1 text-sm font-semibold text-gray-800">
+              {{ item.label }}
+            </h4>
+            <div class="flex items-center gap-x-2">
+              <span class="w-8 text-left text-xs text-gray-500">1</span>
+              <USlider :modelValue="item.value" :max="5" class="flex-1" />
+              <span class="w-8 text-right text-xs text-gray-500">5</span>
+            </div>
+            <div class="mt-1 flex justify-between text-xs text-gray-500">
+              <span>{{ item.minLabel }}</span>
+              <span>{{ item.maxLabel }}</span>
+            </div>
+          </div>
+        </div>
+      </BaseSection>
+
+      <!-- トッピング -->
+      <BaseSection title="相性の良いトッピング" icon="i-lucide-coffee">
+        <div class="grid gap-3">
+          <UCheckbox
+            v-for="(topping, index) in recommendation.toppings"
+            :key="index"
+            :label="topping"
+            variant="card"
+          />
+        </div>
+      </BaseSection>
+    </UCard>
+
+    <div v-else-if="isLoading" class="py-10 text-center text-sm text-gray-500">
+      <span
+        v-for="(char, index) in 'バリスタがコーヒーを準備中です...'.split('')"
+        :key="index"
+        class="animate-wave inline-block"
+        :style="{ animationDelay: `${index * 0.1}s` }"
+      >
+        {{ char }}
+      </span>
     </div>
 
-    <div v-else-if="error">
-      <p class="text-red-600">
-        {{ (error.data as any)?.message ?? 'コーヒーの提案取得に失敗しました' }}
-      </p>
+    <div v-else-if="error" class="py-10 text-center text-red-600">
+      {{ (error.data as any)?.message ?? 'コーヒーの提案取得に失敗しました' }}
     </div>
-
-    <div v-else-if="recommendation" class="space-y-4 rounded border p-4 shadow">
-      <h2 class="text-xl font-semibold">{{ recommendation.coffeeName }}</h2>
-
-      <div>
-        <strong>豆の配合:</strong>
-        <ul class="list-disc pl-6">
-          <li v-for="bean in recommendation.beans" :key="bean.origin">
-            {{ bean.origin }}: {{ bean.ratio }}%
-          </li>
-        </ul>
-      </div>
-
-      <p><strong>焙煎度:</strong> {{ recommendation.roast }}</p>
-
-      <p v-if="recommendation.toppings.length">
-        <strong>トッピング:</strong>
-        {{ recommendation.toppings.join(', ') }}
-      </p>
-
-      <p class="text-gray-600 italic">"{{ recommendation.comment }}"</p>
-    </div>
-  </div>
+  </UContainer>
 </template>
+
+<style scoped>
+@keyframes waveFade {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: translateY(2px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-wave {
+  animation: waveFade 1.5s ease-in-out infinite;
+}
+</style>

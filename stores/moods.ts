@@ -1,24 +1,25 @@
 import { defineStore } from 'pinia';
+import { PINIA } from '~/shared/constants';
+
+/** ローカルストレージのキー */
+export const MOOD_LOCAL_STORAGE_KEY = `${PINIA}-moods`;
 
 export const useMoodStore = defineStore('mood', {
   state: () => ({
-    selected: [] as string[],
+    selectedMoods: [] as string[],
   }),
 
   actions: {
     setSelectedMoods(moods: string[]) {
-      this.selected = moods;
-      localStorage.setItem('selectedMoods', JSON.stringify(moods));
-    },
-    loadFromStorage() {
-      const stored = localStorage.getItem('selectedMoods');
-      if (stored) {
-        this.selected = JSON.parse(stored);
-      }
+      this.selectedMoods = moods;
     },
     clear() {
-      this.selected = [];
-      localStorage.removeItem('selectedMoods');
+      this.selectedMoods = [];
     },
+  },
+  persist: {
+    // pinia-plugin-persistedstate のローカルストレージを指定
+    storage: piniaPluginPersistedstate.localStorage(),
+    key: MOOD_LOCAL_STORAGE_KEY,
   },
 });

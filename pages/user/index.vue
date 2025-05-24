@@ -12,7 +12,7 @@ const { data: moods } = useApiData<MoodList>({
   },
 });
 
-const selectedMoods = ref<Set<string>>(new Set());
+const selectedMoods = ref<Set<string>>(new Set(moodStore.selectedMoods));
 
 /**
  * 気分タグを選択する

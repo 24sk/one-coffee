@@ -16,10 +16,10 @@ export const useApiDataWithBody = <T, B = unknown>(apiData: ApiDataWithBody<B>) 
     }
   };
 
-  const { data, pending, error, refresh } = useAsyncData<T>(key, fetcher, {
+  const { data, pending, error, refresh, execute } = useAsyncData<T>(key, fetcher, {
     server: opts?.server ?? false,
     lazy: opts?.immediate === false,
   });
 
-  return { data, pending, error, refresh };
+  return { data, pending, error, refresh, execute };
 };

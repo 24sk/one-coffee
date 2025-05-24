@@ -1,15 +1,18 @@
 <script setup lang="ts">
+import type { StepperItem } from '@nuxt/ui';
+
 const route = useRoute();
 
-const pageMessages: Record<string, string> = {
-  '/user': '今日の気分をおしえてください',
-  '/user/recommend': 'おすすめのコーヒーはこちら！',
-  '/user/adjust': 'もっと細かく調整したい？',
+const currentStepMaps: Record<string, number> = {
+  '/user': 0,
+  '/user/recommend': 1,
+  '/user/adjust': 2,
 };
 
-const message = computed(() => pageMessages[route.path] ?? '');
+const currentStep = computed(() => currentStepMaps[route.path] ?? 0);
 
-const items = computed(() => [
+/** ナビゲーションメニューのアイテム */
+const navigationItems = computed(() => [
   {
     label: 'Top',
     to: '/user',
@@ -24,6 +27,21 @@ const items = computed(() => [
     icon: 'i-lucide-heart-plus',
   },
 ]);
+
+const stepperItems = ref<StepperItem[]>([
+  {
+    title: '今日の気分',
+    icon: 'i-lucide-smile',
+  },
+  {
+    title: 'おすすめ',
+    icon: 'i-lucide-bean',
+  },
+  {
+    title: 'コーヒーを調整',
+    icon: 'i-lucide-coffee',
+  },
+]);
 </script>
 
 <template>
@@ -31,15 +49,22 @@ const items = computed(() => [
     <!-- 上部ヘッダー -->
     <UHeader mode="slideover" to="/">
       <template #title>
-        <h1 class="text-2xl font-bold text-gray-900">One Coffee</h1>
+        <div class="flex items-center gap-3">
+          <UAvatar
+            src="/images/one_coffee_icon.png"
+            alt="One Coffee Icon"
+            class="h-12 w-12 rounded-full border border-gray-300 shadow-sm"
+          />
+          <h1 class="text-2xl text-gray-900">One Coffee</h1>
+        </div>
       </template>
 
       <template #right>
-        <UNavigationMenu :items="items" variant="link" class="hidden lg:block" />
+        <UNavigationMenu :items="navigationItems" variant="link" class="hidden lg:block" />
       </template>
 
       <template #body>
-        <UNavigationMenu :items="items" orientation="vertical" class="-mx-2.5" />
+        <UNavigationMenu :items="navigationItems" orientation="vertical" class="-mx-2.5" />
         <div class="absolute bottom-0 left-0 w-full border-t border-gray-200 bg-white p-2">
           <UserMenu />
         </div>
@@ -48,26 +73,7 @@ const items = computed(() => [
 
     <!-- バリスタ犬の吹き出しエリア -->
     <div class="flex items-start gap-2 px-4 pt-4">
-      <!-- 犬アイコン -->
-      <UAvatar
-        src="/images/one_coffee_icon.png"
-        alt="One Coffee Icon"
-        class="h-12 w-12 rounded-full border border-gray-300 shadow-sm"
-      />
-
-      <!-- 吹き出し -->
-      <div
-        class="text-brown-800 relative max-w-xs rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm shadow-md"
-      >
-        <span class="text-base font-semibold">{{ message }}</span>
-        <!-- 吹き出しの三角形 -->
-        <div
-          class="absolute top-3 left-0 -translate-x-full border-y-[10px] border-r-[14px] border-y-transparent border-r-amber-50"
-        />
-        <div
-          class="absolute top-3 left-0 -z-10 -translate-x-full border-y-[11px] border-r-[15px] border-y-transparent border-r-amber-200"
-        />
-      </div>
+      <UStepper :items="stepperItems" class="w-full" size="sm" :model-value="currentStep" />
     </div>
   </div>
 </template>

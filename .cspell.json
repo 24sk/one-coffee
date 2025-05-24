@@ -1,6 +1,16 @@
 {
   "version": "0.2",
-  "words": ["nuxt", "vueuse", "nuxi", "nitropack", "lucide", "supabase", "slideover", "reka"],
+  "words": [
+    "nuxt",
+    "vueuse",
+    "nuxi",
+    "nitropack",
+    "lucide",
+    "supabase",
+    "slideover",
+    "reka",
+    "Persistedstate"
+  ],
   "ignorePaths": [
     "node_modules",
     "dist",

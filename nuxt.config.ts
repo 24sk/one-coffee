@@ -3,7 +3,13 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
   css: ['/assets/css/main.css'],
-  modules: ['@nuxt/scripts', '@nuxt/ui-pro', '@nuxtjs/supabase', '@pinia/nuxt'],
+  modules: [
+    '@nuxt/scripts',
+    '@nuxt/ui-pro',
+    '@nuxtjs/supabase',
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
+  ],
   supabase: { redirect: false },
   runtimeConfig: {
     openai: {
