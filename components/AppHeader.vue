@@ -1,18 +1,29 @@
 <script setup lang="ts">
-import type { StepperItem } from '@nuxt/ui';
+import type { StepperItem, NavigationMenuItem } from '@nuxt/ui';
 
 const route = useRoute();
 
+/**
+ * ステップマップ
+ *
+ * パスに応じてステップの値を返す
+ *
+ * 例:
+ * - /user の場合は 0
+ * - /user/recommend の場合は 1
+ * - /user/adjust の場合は 2
+ */
 const currentStepMaps: Record<string, number> = {
   '/user': 0,
   '/user/recommend': 1,
   '/user/adjust': 2,
 };
 
+/** 現在のステップ */
 const currentStep = computed(() => currentStepMaps[route.path] ?? 0);
 
 /** ナビゲーションメニューのアイテム */
-const navigationItems = computed(() => [
+const navigationItems = computed<NavigationMenuItem[]>(() => [
   {
     label: 'Top',
     to: '/user',
@@ -20,6 +31,7 @@ const navigationItems = computed(() => [
   },
   {
     label: 'recommend',
+    to: '/user/recommend',
     icon: 'i-lucide-heart',
   },
   {
@@ -28,7 +40,8 @@ const navigationItems = computed(() => [
   },
 ]);
 
-const stepperItems = ref<StepperItem[]>([
+/** ステッパーズアイテム */
+const stepperItems = computed<StepperItem[]>(() => [
   {
     title: '今日の気分',
     icon: 'i-lucide-smile',
@@ -38,7 +51,7 @@ const stepperItems = ref<StepperItem[]>([
     icon: 'i-lucide-bean',
   },
   {
-    title: 'コーヒーを調整',
+    title: 'カスタマイズ',
     icon: 'i-lucide-coffee',
   },
 ]);
@@ -55,7 +68,7 @@ const stepperItems = ref<StepperItem[]>([
             alt="One Coffee Icon"
             class="h-12 w-12 rounded-full border border-gray-300 shadow-sm"
           />
-          <h1 class="text-2xl text-gray-900">One Coffee</h1>
+          <h1 class="text-3xl" style="font-family: 'Lobster', cursive">One Coffee</h1>
         </div>
       </template>
 
@@ -71,9 +84,15 @@ const stepperItems = ref<StepperItem[]>([
       </template>
     </UHeader>
 
-    <!-- バリスタ犬の吹き出しエリア -->
+    <!-- ステッパー -->
     <div class="flex items-start gap-2 px-4 pt-4">
-      <UStepper :items="stepperItems" class="w-full" size="sm" :model-value="currentStep" />
+      <UStepper
+        :items="stepperItems"
+        class="w-full"
+        size="sm"
+        :model-value="currentStep"
+        disabled
+      />
     </div>
   </div>
 </template>

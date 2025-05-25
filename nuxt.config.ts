@@ -1,7 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
+  googleFonts: {
+    families: {
+      Lobster: true,
+    },
+    display: 'swap',
+  },
   css: ['/assets/css/main.css'],
   modules: [
     '@nuxt/scripts',
@@ -9,6 +15,7 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
+    '@nuxtjs/google-fonts',
   ],
   supabase: { redirect: false },
   runtimeConfig: {

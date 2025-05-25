@@ -8,13 +8,20 @@ const {
   data: recommendation,
   pending: isLoading,
   error,
-} = useApiDataWithBody<RecommendResponse, { moods: string[] }>({
+} = useApiDataWithBody<RecommendResponse, { moods: string[]; freeText: string }>({
   key: 'recommendation',
   url: '/api/recommend',
-  body: { moods: moodStore.selectedMoods },
+  body: {
+    moods: moodStore.moods || [],
+    freeText: moodStore.freeText || '',
+  },
   opts: { immediate: true, server: false },
 });
 
+/**
+ * コーヒー豆のブレンド比率の色を取得
+ * @param index
+ */
 const getBeanColor = (index: number): string => {
   const colors = ['#C0D6DF', '#AEC3B0', '#FFD6A5', '#FFADAD', '#CAFFBF'];
   return colors[index % colors.length];
@@ -50,22 +57,22 @@ const getBeanColor = (index: number): string => {
       <!-- 味わいの特徴 -->
       <BaseSection title="味わいの特徴" icon="i-lucide-bean">
         <!-- コーヒー豆比率 -->
-        <!-- コーヒー豆比率 -->
         <div class="mb-6">
           <h4 class="mb-2 text-sm font-semibold text-gray-800">コーヒー豆のブレンド比率</h4>
           <div
-            class="flex h-6 w-full overflow-hidden rounded-full border border-gray-200 bg-gray-100 shadow-sm"
+            class="flex h-8 w-full overflow-hidden rounded-full border border-gray-200 bg-gray-100 shadow-sm"
           >
             <span
               v-for="(bean, index) in recommendation.beans"
               :key="index"
-              class="flex h-full items-center justify-center px-1 text-[10px] font-medium whitespace-nowrap text-gray-900"
+              class="flex flex-col items-center justify-center text-center text-[10px] leading-[1.1] font-medium text-gray-800"
               :style="{
                 width: bean.ratio + '%',
                 backgroundColor: getBeanColor(index),
               }"
             >
-              {{ bean.origin }} {{ Math.round(bean.ratio) }}%
+              {{ bean.origin }}
+              <span>{{ Math.round(bean.ratio) }}%</span>
             </span>
           </div>
         </div>
@@ -102,7 +109,11 @@ const getBeanColor = (index: number): string => {
       </BaseSection>
 
       <!-- トッピング -->
-      <BaseSection title="相性の良いトッピング" icon="i-lucide-coffee">
+      <BaseSection
+        v-if="recommendation.toppings.length"
+        title="相性の良いトッピング"
+        icon="i-lucide-coffee"
+      >
         <div class="grid gap-3">
           <UCheckbox
             v-for="(topping, index) in recommendation.toppings"
@@ -123,6 +134,13 @@ const getBeanColor = (index: number): string => {
       >
         {{ char }}
       </span>
+
+      <!-- ホニョのGIFを追加 -->
+      <img
+        src="/images/honyo_pc_search.gif"
+        alt="ホニョが検索中"
+        class="mx-auto mt-6 h-32 w-auto"
+      />
     </div>
 
     <div v-else-if="error" class="py-10 text-center text-red-600">

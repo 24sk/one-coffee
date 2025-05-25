@@ -10,10 +10,13 @@ const openai = new OpenAI({
 /** コーヒーのおすすめを提案する */
 export default defineEventHandler(async (event) => {
   const body = await readValidatedBody<RecommendRequest>(event, recommendRequestSchema.parse);
-  const { moods } = body;
+  const { moods, freeText } = body;
 
   // プロンプトを構築
-  const prompt = buildPrompt(moods);
+  const prompt = buildPrompt({
+    moods,
+    freeText,
+  });
 
   const chat = await openai.chat.completions.create({
     model: 'gpt-4',

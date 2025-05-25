@@ -12,7 +12,10 @@ const { data: moods } = useApiData<MoodList>({
   },
 });
 
-const selectedMoods = ref<Set<string>>(new Set(moodStore.selectedMoods));
+/** 今日の気分 */
+const selectedMoods = ref<Set<string>>(new Set(moodStore.moods));
+/** 自由入力欄 */
+const freeText = ref(moodStore.freeText || '');
 
 /**
  * 気分タグを選択する
@@ -31,6 +34,7 @@ const goToNext = () => {
   if (selectedMoods.value.size > 0) {
     // 選択した気分タグをストアに保存
     moodStore.setSelectedMoods(Array.from(selectedMoods.value));
+    moodStore.setSelectedFreeText(freeText.value.trim());
     router.push({
       path: '/user/recommend',
     });
@@ -57,6 +61,20 @@ const goToNext = () => {
       </UBadge>
     </div>
 
+    <!-- フリー入力欄 -->
+    <div>
+      <label for="free-text" class="free-text-label block text-sm font-medium text-gray-700">
+        気分や好みを自由に入力
+      </label>
+      <UTextarea
+        id="free-text"
+        v-model="freeText"
+        placeholder="例: 午後にリラックスしたい気分。ミルク系が好きです。"
+        autoresize
+        class="min-h-[120px] w-full rounded-md"
+      />
+    </div>
+
     <!-- 次へボタン -->
     <UButton
       size="lg"
@@ -66,12 +84,15 @@ const goToNext = () => {
       @click="goToNext"
       trailing-icon="i-lucide-arrow-right"
     >
-      <span class="block w-full text-center">次へ</span>
+      <span class="block w-full text-center">おすすめを見る</span>
     </UButton>
   </div>
 </template>
 <style scoped>
 .instagram-tag {
   background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+.free-text-label {
+  margin-bottom: -15px;
 }
 </style>

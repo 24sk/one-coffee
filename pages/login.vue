@@ -39,7 +39,7 @@ const loginWithGoogle = async () => {
 
     <!-- 見出しと説明文 -->
     <div class="space-y-2">
-      <h1 class="text-2xl font-bold">One Coffeeへようこそ</h1>
+      <h1 class="text-2xl" style="font-family: 'Lobster', cursive">One Coffeeへようこそ</h1>
       <p class="text-xs whitespace-nowrap text-gray-500">
         愛犬バリスタと一緒に、今日のコーヒーを選びましょう。
       </p>

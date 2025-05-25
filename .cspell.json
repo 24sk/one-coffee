@@ -9,7 +9,9 @@
     "supabase",
     "slideover",
     "reka",
-    "Persistedstate"
+    "Persistedstate",
+    "honyo",
+    "autoresize"
   ],
   "ignorePaths": [
     "node_modules",

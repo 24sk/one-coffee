@@ -1,7 +1,8 @@
 import { z } from 'zod';
 
 export const recommendRequestSchema = z.object({
-  moods: z.array(z.string().min(1)).min(1),
+  moods: z.array(z.string().min(1)).min(1).optional(),
+  freeText: z.string().min(1).optional(),
 });
 
 export const recommendResponseSchema = z.object({

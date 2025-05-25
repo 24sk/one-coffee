@@ -1,20 +1,26 @@
 import { defineStore } from 'pinia';
 import { PINIA } from '~/shared/constants';
+import type { RecommendRequest } from '~/types/recommend';
 
 /** ローカルストレージのキー */
 export const MOOD_LOCAL_STORAGE_KEY = `${PINIA}-moods`;
 
 export const useMoodStore = defineStore('mood', {
-  state: () => ({
-    selectedMoods: [] as string[],
+  state: (): RecommendRequest => ({
+    moods: [],
+    freeText: '',
   }),
 
   actions: {
     setSelectedMoods(moods: string[]) {
-      this.selectedMoods = moods;
+      this.moods = moods;
+    },
+    setSelectedFreeText(text: string) {
+      this.freeText = text;
     },
     clear() {
-      this.selectedMoods = [];
+      this.moods = [];
+      this.freeText = '';
     },
   },
   persist: {
