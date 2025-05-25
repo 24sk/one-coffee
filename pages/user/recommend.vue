@@ -2,7 +2,41 @@
 import type { RecommendResponse } from '~/types/recommend';
 import BaseSection from '~/components/BaseSection.vue';
 
+/** スライダー表示項目 */
+interface SliderItem {
+  /** ラベル */
+  label: string;
+  /** 値 */
+  value: number[];
+  /** 最小値のラベル名 */
+  minLabel: string;
+  /** 最大値のラベル名 */
+  maxLabel: string;
+}
+
 const moodStore = useMoodStore();
+
+/** スライダー表示項目 */
+const sliderItems = computed<SliderItem[]>(() => [
+  {
+    label: 'ロースト',
+    value: getStepValues(recommendation.value?.roastLevel ?? 1),
+    minLabel: 'LIGHT',
+    maxLabel: 'DARK',
+  },
+  {
+    label: '酸味',
+    value: getStepValues(recommendation.value?.acidity ?? 1),
+    minLabel: 'LOW',
+    maxLabel: 'HIGH',
+  },
+  {
+    label: 'コク',
+    value: getStepValues(recommendation.value?.body ?? 1),
+    minLabel: 'LIGHT',
+    maxLabel: 'FULL',
+  },
+]);
 
 const {
   data: recommendation,
@@ -26,6 +60,14 @@ const getBeanColor = (index: number): string => {
   const colors = ['#C0D6DF', '#AEC3B0', '#FFD6A5', '#FFADAD', '#CAFFBF'];
   return colors[index % colors.length];
 };
+
+/**
+ * スライダーの値を配列に変換
+ * @param value
+ */
+const getStepValues = (value: number) => {
+  return Array.from({ length: value }, (_, i) => i + 1);
+};
 </script>
 
 <template>
@@ -45,7 +87,7 @@ const getBeanColor = (index: number): string => {
       </template>
 
       <!-- 説明 -->
-      <BaseSection title="商品説明" icon="i-lucide-message-square-text">
+      <BaseSection title="説明" icon="i-lucide-message-square-text">
         <h4 class="mb-1 text-center text-base font-semibold text-gray-800">
           {{ recommendation.subtitle }}
         </h4>
@@ -79,25 +121,21 @@ const getBeanColor = (index: number): string => {
 
         <!-- スライダー項目 -->
         <div class="grid gap-5">
-          <div
-            v-for="item in [
-              {
-                label: 'ロースト',
-                value: recommendation.roastLevel,
-                minLabel: 'LIGHT',
-                maxLabel: 'DARK',
-              },
-              { label: '酸味', value: recommendation.acidity, minLabel: 'LOW', maxLabel: 'HIGH' },
-              { label: 'コク', value: recommendation.body, minLabel: 'LIGHT', maxLabel: 'FULL' },
-            ]"
-            :key="item.label"
-          >
+          <div v-for="item in sliderItems" :key="item.label">
             <h4 class="mb-1 text-sm font-semibold text-gray-800">
               {{ item.label }}
             </h4>
             <div class="flex items-center gap-x-2">
               <span class="w-8 text-left text-xs text-gray-500">1</span>
-              <USlider :modelValue="item.value" :max="5" class="flex-1" />
+              <USlider
+                :modelValue="item.value"
+                :min="1"
+                :max="5"
+                class="flex-1"
+                disabled
+                :min-steps-between-thumbs="1"
+                tooltip
+              />
               <span class="w-8 text-right text-xs text-gray-500">5</span>
             </div>
             <div class="mt-1 flex justify-between text-xs text-gray-500">
