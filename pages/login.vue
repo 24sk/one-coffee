@@ -48,7 +48,12 @@ const loginWithGoogle = async () => {
     </div>
 
     <!-- 利用規約に同意するチェックボックス -->
-    <UCheckbox v-model="agreedToTerms" size="sm" class="flex items-center">
+    <UCheckbox
+      v-model="agreedToTerms"
+      size="sm"
+      class="flex items-center"
+      icon="i-lucide-paw-print"
+    >
       <template #label>
         <span
           class="cursor-pointer text-sm font-medium text-gray-700 underline underline-offset-4 hover:text-gray-900"

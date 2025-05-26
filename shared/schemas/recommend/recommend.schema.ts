@@ -5,15 +5,15 @@ export const recommendRequestSchema = z.object({
   freeText: z.string().min(1).optional(),
 });
 
+export const beanSchema = z.object({
+  origin: z.string(),
+  ratio: z.number().min(0).max(100)
+});
+
 export const recommendResponseSchema = z.object({
   coffeeName: z.string(),
   subtitle: z.string(),
-  beans: z.array(
-    z.object({
-      origin: z.string(),
-      ratio: z.number(),
-    })
-  ),
+  beans: z.array(beanSchema),
   roast: z.string(),
   roastLevel: z.number(),
   acidity: z.number(),
@@ -24,3 +24,4 @@ export const recommendResponseSchema = z.object({
 
 export type RecommendRequest = z.infer<typeof recommendRequestSchema>;
 export type RecommendResponse = z.infer<typeof recommendResponseSchema>;
+export type Bean = z.infer<typeof beanSchema>;

@@ -1,47 +1,104 @@
-import { buildPrompt } from '~/server/util';
 import { recommendRequestSchema, recommendResponseSchema } from '~/shared/schemas/recommend';
-import type { RecommendRequest } from '~/types/recommend';
+import type { RecommendRequest, RecommendResponseWithId } from '~/types/recommend';
+import { buildPrompt } from '~/server/util';
+import { randomUUID } from 'crypto';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
   apiKey: useRuntimeConfig().openai.apiKey,
 });
 
-/** コーヒーのおすすめを提案する */
-export default defineEventHandler(async (event) => {
+/**
+ * おすすめのコーヒー提案を取得する
+ * @param event
+ * @returns おすすめコーヒー情報
+ */
+export default defineEventHandler(async (event): Promise<RecommendResponseWithId> => {
   const body = await readValidatedBody<RecommendRequest>(event, recommendRequestSchema.parse);
-  const { moods, freeText } = body;
+  const recommendationId = randomUUID();
 
-  // プロンプトを構築
-  const prompt = buildPrompt({
-    moods,
-    freeText,
-  });
+  const prompt = buildPrompt(body);
 
   const chat = await openai.chat.completions.create({
-    model: 'gpt-4',
-    messages: [{ role: 'user', content: prompt }],
+    model: 'gpt-4-1106-preview', // 最新の function calling 対応モデル
     temperature: 0.8,
+    messages: [
+      { role: 'system', content: 'あなたはプロのバリスタです。お客様の気分・好み・自由なご要望を参考に、最適なコーヒーを提案し、JSON形式で返答してください。' },
+      { role: 'user', content: prompt },
+    ],
+    tools: [
+      {
+        type: 'function',
+        function: {
+          name: 'recommendCoffee',
+          description: 'ユーザーの気分に合ったコーヒーを提案する',
+          parameters: {
+            type: 'object',
+            properties: {
+              coffeeName: { type: 'string' },
+              subtitle: { type: 'string' },
+              imageUrl: { type: 'string' },
+              roast: { type: 'string' },
+              roastLevel: { type: 'integer', minimum: 1, maximum: 5 },
+              acidity: { type: 'integer', minimum: 1, maximum: 5 },
+              body: { type: 'integer', minimum: 1, maximum: 5 },
+              beans: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    origin: { type: 'string' },
+                    ratio: { type: 'number' },
+                  },
+                  required: ['origin', 'ratio'],
+                },
+              },
+              toppings: {
+                type: 'array',
+                items: { type: 'string' },
+              },
+              comment: { type: 'string' },
+            },
+            required: [
+              'coffeeName',
+              'subtitle',
+              'imageUrl',
+              'roast',
+              'roastLevel',
+              'acidity',
+              'body',
+              'beans',
+              'toppings',
+              'comment',
+            ],
+          },
+        },
+      },
+    ],
+    tool_choice: { type: 'function', function: { name: 'recommendCoffee' } },
   });
 
-  const content = chat.choices[0]?.message?.content?.trim();
-  if (!content) {
-    throw createError({
-      statusCode: 500,
-      message: 'OpenAIの応答が空でした',
-    });
+  const toolCall = chat.choices?.[0]?.message?.tool_calls?.[0];
+  const args = toolCall?.function?.arguments;
+
+  if (!args) {
+    throw createError({ statusCode: 500, message: 'OpenAIのtool_callsの抽出に失敗しました。' });
   }
 
-  let json: unknown;
+  let parsed: unknown;
   try {
-    json = JSON.parse(content);
-  } catch (err) {
+    parsed = JSON.parse(args);
+  } catch {
     throw createError({
       statusCode: 500,
-      message: 'OpenAIからのJSON解析に失敗しました',
+      message: 'tool_callsからのJSON解析に失敗しました',
     });
   }
 
-  // スキーマに沿って検証して返す
-  return recommendResponseSchema.parse(json);
+  const result = recommendResponseSchema.parse(parsed);
+
+  return {
+    ...result,
+    recommendationId,
+  };
 });

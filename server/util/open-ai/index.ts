@@ -1,4 +1,4 @@
-import { RecommendRequest } from '~/types/recommend';
+import type { RecommendRequest } from '~/types/recommend';
 
 /**
  * OpenAIに渡すプロンプト生成
