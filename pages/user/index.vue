@@ -13,9 +13,18 @@ const { data: moods } = useApiData<MoodList>({
 });
 
 /** 今日の気分 */
-const selectedMoods = ref<Set<string>>(new Set(moodStore.moods));
+const selectedMoods = ref<Set<string>>(new Set());
 /** 自由入力欄 */
-const freeText = ref(moodStore.freeText || '');
+const freeText = ref('');
+
+/**
+ * マウント時に気分タグと自由入力欄を初期化する
+ * @remarks storeはサーバーサイドでは取得できないため、hydrationエラーを防ぐためにマウント時に初期化する
+ */
+onMounted(() => {
+  selectedMoods.value = new Set(moodStore.moods);
+  freeText.value = moodStore.freeText || '';
+});
 
 /**
  * 気分タグを選択する
