@@ -1,20 +1,18 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  const client = useSupabaseClient();
-  const { data } = await client.auth.getSession();
-  const user = data.session?.user;
+  const user = useSupabaseUser();
 
   const publicPages = ['/login', '/auth/callback'];
   const isPublic = publicPages.includes(to.path);
 
-  if (!user && !isPublic) {
+  if (!user.value && !isPublic) {
     return navigateTo('/login');
   }
 
-  if (user && to.path === '/login') {
+  if (user.value && to.path === '/login') {
     return navigateTo('/user');
   }
 
   if (to.path === '/') {
-    return navigateTo(user ? '/user' : '/login');
+    return navigateTo(user.value ? '/user' : '/login');
   }
 });
