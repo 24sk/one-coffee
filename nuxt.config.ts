@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/google-fonts',
+    '@vueuse/nuxt',
   ],
   supabase: { redirect: false },
   runtimeConfig: {

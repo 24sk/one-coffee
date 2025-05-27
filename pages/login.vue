@@ -9,7 +9,7 @@ const toast = useToast();
 const { baseUrl } = useRuntimeConfig().public;
 
 /** 利用規約に同意したかどうか */
-const agreedToTerms = ref(false);
+const agreedToTerms = useLocalStorage('agreedToTerms', false);
 /** 利用規約モーダルを開いているかどうか */
 const isTermsModalOpen = ref(false);
 
@@ -50,7 +50,7 @@ const loginWithGoogle = async () => {
     <!-- 利用規約に同意するチェックボックス -->
     <UCheckbox
       v-model="agreedToTerms"
-      size="sm"
+      size="md"
       class="flex items-center"
       icon="i-lucide-paw-print"
     >

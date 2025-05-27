@@ -21,7 +21,7 @@ export default defineEventHandler(async (event): Promise<RecommendResponseWithId
 
   const chat = await openai.chat.completions.create({
     model: 'gpt-4-1106-preview', // 最新の function calling 対応モデル
-    temperature: 0.8,
+    temperature: 0.5,
     messages: [
       { role: 'system', content: 'あなたはプロのバリスタです。お客様の気分・好み・自由なご要望を参考に、最適なコーヒーを提案し、JSON形式で返答してください。' },
       { role: 'user', content: prompt },
@@ -35,8 +35,8 @@ export default defineEventHandler(async (event): Promise<RecommendResponseWithId
           parameters: {
             type: 'object',
             properties: {
-              coffeeName: { type: 'string' },
-              subtitle: { type: 'string' },
+              coffeeName: { type: 'string', minLength: 1 },
+              subtitle: { type: 'string', minLength: 1 },
               imageUrl: { type: 'string' },
               roast: { type: 'string' },
               roastLevel: { type: 'integer', minimum: 1, maximum: 5 },
@@ -55,14 +55,14 @@ export default defineEventHandler(async (event): Promise<RecommendResponseWithId
               },
               toppings: {
                 type: 'array',
-                items: { type: 'string' },
+                items: { type: 'string', minLength: 1 },
+                minItems: 1,
               },
               comment: { type: 'string' },
             },
             required: [
               'coffeeName',
               'subtitle',
-              'imageUrl',
               'roast',
               'roastLevel',
               'acidity',

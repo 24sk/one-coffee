@@ -18,10 +18,9 @@ export const buildPrompt = (recommendRequest: RecommendRequest): string => {
 - 気分タグ: ${moodList}
 - フリーテキスト: ${freeTextFormatted}
 
-### 出力形式（日本語、JSON形式で返答してください）
+### 出力形式
 
 {
-  "imageUrl": "https://example.com/images/ethiopia-mocha.jpg",
   "coffeeName": "〇〇ブレンド",
   "subtitle": "〇〇な気分のあなたに",
   "beans": [
@@ -37,11 +36,14 @@ export const buildPrompt = (recommendRequest: RecommendRequest): string => {
 }
 
 ### 注意点
+- 必ず recommendCoffee 関数を呼び出し、**全フィールドを正確に埋めてください**。
 - **beans** の合計比率は必ず 100% にしてください。
 - **subtitle** は「このコーヒーが誰に向いているか」を簡潔に **15文字程度** で表現してください（例: 軽やかな風味のエスプレッソを楽しみたい方に）。
 - **roastLevel**, **acidity**, **body** はそれぞれ 1〜5 の整数値で記述してください。
   - 1 = 軽め／控えめ、5 = 強め／深め
+- **toppings** は最低1つ以上提案してください（例: ミルク、シナモン、はちみつなど）
 - コメントは丁寧で、やさしい語り口で 2～3 行程度にまとめてください。
-- 出力は上記の JSON オブジェクトのみ。文章や補足は不要です。
+- 文章や補足は不要です。
+- 出力は**日本語**で返答してください。
 `;
 };
