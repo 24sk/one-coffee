@@ -1,7 +1,8 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   const client = useSupabaseClient();
-  const { data } = await client.auth.getSession();
-  const user = data.session?.user;
+  const {
+    data: { user },
+  } = await client.auth.getUser();
 
   const publicPages = ['/login', '/auth/callback'];
   const isPublic = publicPages.includes(to.path);

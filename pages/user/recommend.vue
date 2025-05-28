@@ -82,21 +82,6 @@ onBeforeUnmount(() => {
   observer.value?.disconnect();
 });
 
-onBeforeRouteLeave((to) => {
-  // 遷移先が「気分選択画面」の場合
-  if (to.path === '/user') {
-    // 確認ダイアログを表示（UDialogなどでも可）
-    const confirmed = window.confirm('気分をリフレッシュしますか？');
-    // リフレッシュの場合はローカルストレージの気分情報を削除
-    if (confirmed) {
-      moodStore.clear();
-      return true;
-    }
-  }
-  // 他の画面へは制限なく遷移
-  return true;
-});
-
 /**
  * フィードバックを送信
  * @param rating 評価

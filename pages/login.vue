@@ -9,9 +9,17 @@ const toast = useToast();
 const { baseUrl } = useRuntimeConfig().public;
 
 /** 利用規約に同意したかどうか */
-const agreedToTerms = useLocalStorage('agreedToTerms', false);
+const agreedToTerms = ref(false);
 /** 利用規約モーダルを開いているかどうか */
 const isTermsModalOpen = ref(false);
+
+onMounted(() => {
+  agreedToTerms.value = localStorage.getItem('agreedToTerms') === 'true';
+});
+
+watch(agreedToTerms, (val) => {
+  localStorage.setItem('agreedToTerms', String(val));
+});
 
 /** Googleログイン */
 const loginWithGoogle = async () => {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { StepperItem, NavigationMenuItem } from '@nuxt/ui';
+import { baseItems } from '~/shared/constants';
 
 const route = useRoute();
 
@@ -22,39 +23,22 @@ const currentStepMaps: Record<string, number> = {
 /** 現在のステップ */
 const currentStep = computed(() => currentStepMaps[route.path] ?? 0);
 
-/** ナビゲーションメニューのアイテム */
-const navigationItems = computed<NavigationMenuItem[]>(() => [
-  {
-    label: 'Top',
-    to: '/user',
-    icon: 'i-lucide-coffee',
-  },
-  {
-    label: 'recommend',
-    to: '/user/recommend',
-    icon: 'i-lucide-heart',
-  },
-  {
-    label: 'adjust',
-    icon: 'i-lucide-heart-plus',
-  },
-]);
+/** ナビゲーションメニュー用アイテム */
+const navigationItems = computed<NavigationMenuItem[]>(() =>
+  baseItems.map(({ label, to, icon }) => ({
+    label,
+    to,
+    icon,
+  }))
+);
 
-/** ステッパーズアイテム */
-const stepperItems = computed<StepperItem[]>(() => [
-  {
-    title: '今日の気分',
-    icon: 'i-lucide-smile',
-  },
-  {
-    title: 'おすすめ',
-    icon: 'i-lucide-bean',
-  },
-  {
-    title: 'カスタマイズ',
-    icon: 'i-lucide-coffee',
-  },
-]);
+/** ステッパー用アイテム */
+const stepperItems = computed<StepperItem[]>(() =>
+  baseItems.map(({ label, icon }) => ({
+    title: label,
+    icon,
+  }))
+);
 </script>
 
 <template>

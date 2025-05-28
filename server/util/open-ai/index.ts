@@ -1,5 +1,6 @@
 import type { RecommendRequest } from '~/types/recommend';
 
+
 /**
  * OpenAIに渡すプロンプト生成
  * @param recommendRequest
@@ -36,7 +37,6 @@ export const buildPrompt = (recommendRequest: RecommendRequest): string => {
 }
 
 ### 注意点
-- 必ず recommendCoffee 関数を呼び出し、**全フィールドを正確に埋めてください**。
 - **beans** の合計比率は必ず 100% にしてください。
 - **subtitle** は「このコーヒーが誰に向いているか」を簡潔に **15文字程度** で表現してください（例: 軽やかな風味のエスプレッソを楽しみたい方に）。
 - **roastLevel**, **acidity**, **body** はそれぞれ 1〜5 の整数値で記述してください。
