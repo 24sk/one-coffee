@@ -3,6 +3,7 @@ import type { StepperItem, NavigationMenuItem } from '@nuxt/ui';
 import { baseItems } from '~/shared/constants';
 
 const route = useRoute();
+const moodStore = useMoodStore();
 
 /**
  * ステップマップ
@@ -25,11 +26,17 @@ const currentStep = computed(() => currentStepMaps[route.path] ?? 0);
 
 /** ナビゲーションメニュー用アイテム */
 const navigationItems = computed<NavigationMenuItem[]>(() =>
-  baseItems.map(({ label, to, icon }) => ({
-    label,
-    to,
-    icon,
-  }))
+  baseItems.map(({ label, to, icon }) => {
+    if (to === '/user/recommend') {
+      return {
+        label,
+        to,
+        icon,
+        disabled: moodStore.moods?.length === 0,
+      };
+    }
+    return { label, to, icon };
+  })
 );
 
 /** ステッパー用アイテム */

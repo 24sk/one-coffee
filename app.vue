@@ -1,30 +1,36 @@
 <script setup lang="ts">
-useHead({
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
+const defaultMeta = {
   title: 'One Coffee - 今日の気分でコーヒーを提案',
-  meta: [
-    { charset: 'utf-8' },
-    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-    {
-      name: 'description',
-      content: '愛犬バリスタが今日の気分にぴったりのコーヒーを提案してくれるアプリ「One Coffee」',
-    },
+  description: '愛犬バリスタが今日の気分にぴったりのコーヒーを提案してくれるアプリ「One Coffee」',
+  ogImage: 'https://one-coffee-honyo.vercel.app/images/ogp.jpg',
+};
 
-    // Open Graph（Facebook や LINE 向け）
-    { property: 'og:title', content: 'One Coffee - 気分で選ぶコーヒー提案アプリ' },
-    {
-      property: 'og:description',
-      content: '愛犬バリスタがあなたの気分に合わせてコーヒーを提案します。',
-    },
-    { property: 'og:image', content: 'https://one-coffee-honyo.vercel.app/images/ogp.jpg' },
-    { property: 'og:url', content: 'https://one-coffee-honyo.vercel.app/' },
-    { property: 'og:type', content: 'website' },
+const currentMeta = computed(() => pageMetaMap[route.path] ?? defaultMeta);
 
-    // Twitterカード
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'One Coffee - 気分で選ぶコーヒー提案アプリ' },
-    { name: 'twitter:description', content: '愛犬バリスタが気分に合わせたコーヒーをおすすめ！' },
-    { name: 'twitter:image', content: 'https://one-coffee-honyo.vercel.app/images/ogp.jpg' },
-  ],
+// metaタグを生成しつつ、undefined をフィルタ
+const metaTags = computed(
+  () =>
+    [
+      { name: 'description', content: currentMeta.value.description },
+      { property: 'og:title', content: currentMeta.value.title },
+      { property: 'og:description', content: currentMeta.value.description },
+      { property: 'og:image', content: currentMeta.value.ogImage },
+      { property: 'og:url', content: `https://one-coffee-honyo.vercel.app${route.path}` },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: currentMeta.value.title },
+      { name: 'twitter:description', content: currentMeta.value.description },
+      { name: 'twitter:image', content: currentMeta.value.ogImage },
+    ].filter((tag) => !!tag?.content) // ここで無効なタグを除外
+);
+
+useHead({
+  title: `${currentMeta.value.title} | One Coffee`,
+  meta: metaTags.value,
   link: [{ rel: 'icon', type: 'image/png', href: '/favicon.ico' }],
 });
 </script>
