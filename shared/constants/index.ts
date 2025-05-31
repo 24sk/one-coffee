@@ -16,9 +16,9 @@ export const baseItems = [
       icon: 'i-lucide-bean',
     },
     {
-      key: 'customize',
-      label: 'カスタマイズ',
-      to: undefined,
+      key: 'adjust',
+      label: '調整',
+      to: '/user/adjust',
       icon: 'i-lucide-coffee',
     },
   ] as const;

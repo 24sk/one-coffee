@@ -23,8 +23,8 @@ export interface PageMetaInfo {
     description: '気分にぴったりのコーヒーをご紹介します。',
   },
   '/user/adjust': {
-    title: 'カスタマイズ',
-    description: 'さらに好みに合わせてカスタマイズしましょう。',
+    title: '調整',
+    description: '好みに合わせて調整しましょう。',
   },
   };
   

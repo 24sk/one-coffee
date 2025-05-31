@@ -74,12 +74,12 @@ const loginWithGoogle = async () => {
 
     <!-- Googleログインボタン -->
     <UButton
-      size="lg"
-      color="primary"
-      icon="i-simple-icons-google"
       :loading="isLoading"
       @click="loginWithGoogle"
       :disabled="!agreedToTerms"
+      size="lg"
+      icon="i-simple-icons-google"
+      class="rounded-full"
     >
       Googleでログイン
     </UButton>

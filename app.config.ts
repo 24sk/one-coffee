@@ -7,6 +7,7 @@ export default defineAppConfig({
     button: {
       defaultVariants: {
         variant: 'outline',
+        color: 'primary',
       },
     },
   },

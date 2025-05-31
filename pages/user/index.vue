@@ -87,7 +87,6 @@ const goToNext = () => {
     <!-- 次へボタン -->
     <UButton
       size="lg"
-      color="primary"
       :disabled="selectedMoods.size === 0"
       class="w-full max-w-xs rounded-full font-bold"
       @click="goToNext"

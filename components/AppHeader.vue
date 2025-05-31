@@ -27,7 +27,7 @@ const currentStep = computed(() => currentStepMaps[route.path] ?? 0);
 /** ナビゲーションメニュー用アイテム */
 const navigationItems = computed<NavigationMenuItem[]>(() =>
   baseItems.map(({ label, to, icon }) => {
-    if (to === '/user/recommend') {
+    if (to === '/user/recommend' || to === '/user/adjust') {
       return {
         label,
         to,
