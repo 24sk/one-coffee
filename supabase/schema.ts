@@ -9,6 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      recommendation_results: {
+        Row: {
+          acidity: number | null
+          beans_summary: string | null
+          body: number | null
+          coffee_name: string | null
+          comment: string | null
+          created_at: string | null
+          id: string
+          roast: string | null
+          roast_level: number | null
+          subtitle: string | null
+          toppings_summary: string | null
+        }
+        Insert: {
+          acidity?: number | null
+          beans_summary?: string | null
+          body?: number | null
+          coffee_name?: string | null
+          comment?: string | null
+          created_at?: string | null
+          id: string
+          roast?: string | null
+          roast_level?: number | null
+          subtitle?: string | null
+          toppings_summary?: string | null
+        }
+        Update: {
+          acidity?: number | null
+          beans_summary?: string | null
+          body?: number | null
+          coffee_name?: string | null
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          roast?: string | null
+          roast_level?: number | null
+          subtitle?: string | null
+          toppings_summary?: string | null
+        }
+        Relationships: []
+      }
       user_feedbacks: {
         Row: {
           created_at: string | null
@@ -37,7 +79,15 @@ export type Database = {
           recommendation_id?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_feedbacks_recommendation_id_fkey"
+            columns: ["recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "recommendation_results"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

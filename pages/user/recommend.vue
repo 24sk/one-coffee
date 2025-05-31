@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RecommendResponseWithId } from '~/types/recommend';
+import type { RecommendResponse } from '~/types/recommend';
 import BaseSection from '~/components/BaseSection.vue';
 
 /** スライダー表示項目 */
@@ -48,7 +48,7 @@ const {
   data: recommendation,
   pending: isLoading,
   error,
-} = useApiDataWithBody<RecommendResponseWithId, { moods: string[]; freeText: string }>({
+} = useApiDataWithBody<RecommendResponse, { moods: string[]; freeText: string }>({
   key: 'recommendation',
   url: '/api/recommend',
   body: {
@@ -93,7 +93,7 @@ const sendFeedback = async (rating: number) => {
     await $fetch('/api/feedback', {
       method: 'POST',
       body: {
-        recommendationId: recommendation.value.recommendationId,
+        recommendation: recommendation.value,
         moods: moodStore.moods,
         freeText: moodStore.freeText || '',
         rating,

@@ -11,6 +11,7 @@ export const beanSchema = z.object({
 });
 
 export const recommendResponseSchema = z.object({
+  id: z.string().uuid().optional(),
   coffeeName: z.string(),
   subtitle: z.string(),
   beans: z.array(beanSchema),
