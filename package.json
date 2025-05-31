@@ -8,7 +8,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "generate:supabase-schema": "supabase gen types typescript --project-id=etwwffecrderqmpjzzih --schema public > supabase/schema.ts"
+    "generate:supabase-schema": "supabase gen types typescript --project-id=etwwffecrderqmpjzzih --schema public > supabase/schema.ts",
+    "generate:ml-data": "vite-node scripts/create-user-fb-for-leraning.ts"
   },
   "dependencies": {
     "@nuxt/scripts": "0.11.7",
