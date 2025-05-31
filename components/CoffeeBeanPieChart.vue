@@ -3,6 +3,7 @@ import { Pie } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, type ChartOptions } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import type { Bean } from '~/types/recommend';
+import { BEAN_COLORS } from '~/shared/constants';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, ChartDataLabels);
 
@@ -15,7 +16,7 @@ const chartData = computed(() => ({
   datasets: [
     {
       data: props.beans.map((bean) => bean.ratio),
-      backgroundColor: ['#C0D6DF', '#AEC3B0', '#FFD6A5', '#FFADAD', '#CAFFBF', '#B5EAEA'],
+      backgroundColor: props.beans.map((_, index) => BEAN_COLORS[index % BEAN_COLORS.length]),
     },
   ],
 }));

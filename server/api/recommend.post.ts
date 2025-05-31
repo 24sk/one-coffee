@@ -1,5 +1,5 @@
 import { recommendRequestSchema, recommendResponseSchema } from '~/shared/schemas/recommend';
-import type { RecommendRequest, RecommendResponseWithId } from '~/types/recommend';
+import type { RecommendRequest, RecommendResponse } from '~/types/recommend';
 import { buildPrompt } from '~/server/util';
 import { randomUUID } from 'crypto';
 import OpenAI from 'openai';
@@ -13,7 +13,7 @@ const openai = new OpenAI({
  * @param event
  * @returns おすすめコーヒー情報
  */
-export default defineEventHandler(async (event): Promise<RecommendResponseWithId> => {
+export default defineEventHandler(async (event): Promise<RecommendResponse> => {
   const body = await readValidatedBody<RecommendRequest>(event, recommendRequestSchema.parse);
   const recommendationId = randomUUID();
 
@@ -44,8 +44,9 @@ export default defineEventHandler(async (event): Promise<RecommendResponseWithId
   }
   const result = recommendResponseSchema.parse(json);
 
+
   return {
     ...result,
-    recommendationId,
+    id: recommendationId,
   };
 });

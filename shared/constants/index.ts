@@ -1,6 +1,16 @@
 /** ストアキーのprefix */
 export const PINIA = 'pinia';
 
+/** コーヒー豆毎のチャート配色 */
+export const BEAN_COLORS = [
+  '#C0D6DF', // 青
+  '#AEC3B0', // 緑
+  '#FFD6A5', // オレンジ
+  '#FFADAD', // 赤
+  '#CAFFBF', // ライトグリーン
+  '#B5EAEA', // 水色
+];
+
 /** 共通のメニュー定義 */
 export const baseItems = [
     {

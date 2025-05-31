@@ -2,19 +2,8 @@
 import type { RecommendResponse } from '~/types/recommend';
 import BaseSection from '~/components/BaseSection.vue';
 
-/** スライダー表示項目 */
-interface SliderItem {
-  /** ラベル */
-  label: string;
-  /** 値 */
-  value: number[];
-  /** 最小値のラベル名 */
-  minLabel: string;
-  /** 最大値のラベル名 */
-  maxLabel: string;
-}
-
 const moodStore = useMoodStore();
+const recommendStore = useRecommendStore();
 const toast = useToast();
 const router = useRouter();
 
@@ -23,26 +12,7 @@ const observer = ref<IntersectionObserver | null>(null);
 const hasShownToast = ref(false);
 
 /** スライダー表示項目 */
-const sliderItems = computed<SliderItem[]>(() => [
-  {
-    label: 'ロースト',
-    value: getStepValues(recommendation.value?.roastLevel ?? 1),
-    minLabel: 'LIGHT',
-    maxLabel: 'DARK',
-  },
-  {
-    label: '酸味',
-    value: getStepValues(recommendation.value?.acidity ?? 1),
-    minLabel: 'LOW',
-    maxLabel: 'HIGH',
-  },
-  {
-    label: 'コク',
-    value: getStepValues(recommendation.value?.body ?? 1),
-    minLabel: 'LIGHT',
-    maxLabel: 'FULL',
-  },
-]);
+const sliderItems = useTasteSliderItems(computed(() => recommendation.value));
 
 const {
   data: recommendation,
@@ -56,6 +26,10 @@ const {
     freeText: moodStore.freeText || '',
   },
   opts: { immediate: true, server: false },
+});
+
+watch(recommendation, (value) => {
+  if (value) recommendStore.setRecommendation(value);
 });
 
 /** 相性の良いトッピングセクションが表示されたらフィードバックを表示 */
@@ -116,14 +90,6 @@ const sendFeedback = async (rating: number) => {
   }
 };
 
-/**
- * スライダーの値を配列に変換
- * @param value
- */
-const getStepValues = (value: number) => {
-  return Array.from({ length: value }, (_, i) => i + 1);
-};
-
 /** フィードバックトーストを表示 */
 const showFeedbackToast = () => {
   toast.add({
@@ -166,6 +132,9 @@ const showFeedbackToast = () => {
     ],
   });
 };
+
+// 値を配列に変換（閲覧モード用）
+const getStepValues = (value: number) => Array.from({ length: value }, (_, i) => i + 1);
 </script>
 
 <template>
@@ -210,7 +179,7 @@ const showFeedbackToast = () => {
             <div class="flex items-center gap-x-2">
               <span class="w-8 text-left text-xs text-gray-500">1</span>
               <USlider
-                :modelValue="item.value"
+                :model-value="getStepValues(item.value)"
                 :min="1"
                 :max="5"
                 class="flex-1"
@@ -243,6 +212,16 @@ const showFeedbackToast = () => {
           />
         </div>
       </BaseSection>
+
+      <!-- 調整するボタン -->
+      <UButton
+        size="lg"
+        class="w-full max-w-xs rounded-full font-bold"
+        @click="router.push('/user/adjust')"
+        trailing-icon="i-lucide-arrow-right"
+      >
+        <span class="block w-full text-center">調整する</span>
+      </UButton>
     </UCard>
 
     <div v-else-if="isLoading" class="py-10 text-center text-sm text-gray-500">

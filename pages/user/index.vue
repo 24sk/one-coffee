@@ -22,8 +22,7 @@ const freeText = ref('');
  * @remarks storeはサーバーサイドでは取得できないため、hydrationエラーを防ぐためにマウント時に初期化する
  */
 onMounted(() => {
-  selectedMoods.value = new Set(moodStore.moods);
-  freeText.value = moodStore.freeText || '';
+  moodStore.clear();
 });
 
 /**
