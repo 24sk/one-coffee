@@ -204,12 +204,13 @@ const getStepValues = (value: number) => Array.from({ length: value }, (_, i) =>
         icon="i-lucide-coffee"
       >
         <div ref="toppingSectionRef" class="grid gap-3">
-          <UCheckbox
+          <div
             v-for="(topping, index) in recommendation.toppings"
             :key="index"
-            :label="topping"
-            variant="card"
-          />
+            class="rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 shadow-sm"
+          >
+            {{ topping }}
+          </div>
         </div>
       </BaseSection>
 
