@@ -39,6 +39,7 @@ export const useFavorite = () => {
     }
   };
 
+  /** お気に入りを取得する */
   const getFavorite = async (recommendationId: string) => {
     try {
       return await $fetch<FavoriteResponse | null>(`/api/favorite/${recommendationId}`);

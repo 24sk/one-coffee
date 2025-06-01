@@ -2,7 +2,7 @@ import { Tables } from '~/types';
 import { BaseRepository } from '../base.repo';
 
 /** おすすめコーヒーを管理するリポジトリ */
-export class RecommendationRepository extends BaseRepository<'recommendation_results', 'id'> {
+export class RecommendationRepository extends BaseRepository<'recommendation_results'> {
   protected readonly tableName = 'recommendation_results';
 
   /**

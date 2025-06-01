@@ -17,3 +17,4 @@ export type TableUpdate<T extends keyof Database['public']['Tables']> =
   Database['public']['Tables'][T]['Update'];
 
 export * from './user_feedback';
+export * from './user_favorites';

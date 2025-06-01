@@ -14,15 +14,7 @@ const selectedToppings = ref<string[]>([]);
     <UCard v-if="recommendation" class="mx-auto max-w-2xl space-y-6 rounded-2xl shadow-lg">
       <!-- コーヒー名 -->
       <template #header>
-        <div class="space-y-1 text-center">
-          <h2 class="text-2xl font-bold text-gray-900">
-            <UIcon name="i-lucide-coffee" class="text-brown-500 mr-2 inline" />
-            {{ recommendation.coffeeName }}
-          </h2>
-          <UBadge color="primary" variant="outline" class="rounded-full font-bold">
-            {{ recommendation.roast }} / ホット / アイス
-          </UBadge>
-        </div>
+        <CoffeeDetailHeader :recommendation="recommendation" />
       </template>
 
       <!-- コーヒー豆のブレンド比率 -->
