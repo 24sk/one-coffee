@@ -1,8 +1,9 @@
 import { RecommendResponse } from '~/types/recommend';
 
 export const recommend: RecommendResponse = {
-  coffeeName: 'カーミング ブレンド',
-  subtitle: 'リラックスしたいあなたへ',
+  id: '17b4bf9a-df91-423d-a399-f41f2577d9f4',
+  coffeeName: 'テスト ブレンド',
+  subtitle: 'テストしたいあなたへ',
   beans: [
     {
       origin: 'ブラジル',

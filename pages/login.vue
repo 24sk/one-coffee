@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { WAN_COFFEE } from '~/shared/constants';
+
 definePageMeta({
   layout: 'minimal',
 });
@@ -43,13 +45,13 @@ const loginWithGoogle = async () => {
     <!-- ロゴ -->
     <UAvatar
       src="/images/one_coffee_icon.png"
-      alt="One Coffee"
+      :alt="`${WAN_COFFEE} Icon`"
       class="h-32 w-32 rounded-full border border-gray-300"
     />
 
     <!-- 見出しと説明文 -->
     <div class="space-y-2">
-      <h1 class="text-2xl" style="font-family: 'Lobster', cursive">One Coffeeへようこそ</h1>
+      <h1 class="text-2xl" style="font-family: 'Lobster', cursive">{{ WAN_COFFEE }}へようこそ</h1>
       <p class="text-xs whitespace-nowrap text-gray-500">
         愛犬バリスタと一緒に、今日のコーヒーを選びましょう。
       </p>

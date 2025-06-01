@@ -1,3 +1,5 @@
+export const WAN_COFFEE = 'Wan Coffee' 
+
 /** ストアキーのprefix */
 export const PINIA = 'pinia';
 

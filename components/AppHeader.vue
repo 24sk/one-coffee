@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { StepperItem, NavigationMenuItem } from '@nuxt/ui';
-import { baseItems } from '~/shared/constants';
+import { baseItems, WAN_COFFEE } from '~/shared/constants';
 
 const route = useRoute();
 const moodStore = useMoodStore();
@@ -56,10 +56,10 @@ const stepperItems = computed<StepperItem[]>(() =>
         <div class="flex items-center gap-3">
           <UAvatar
             src="/images/one_coffee_icon.png"
-            alt="One Coffee Icon"
+            :alt="`${WAN_COFFEE} Icon`"
             class="h-12 w-12 rounded-full border border-gray-300 shadow-sm"
           />
-          <h1 class="text-3xl" style="font-family: 'Lobster', cursive">One Coffee</h1>
+          <h1 class="text-3xl" style="font-family: 'Lobster', cursive">{{ WAN_COFFEE }}</h1>
         </div>
       </template>
 

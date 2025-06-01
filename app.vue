@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
+import { WAN_COFFEE } from './shared/constants';
 
 const route = useRoute();
 
 const defaultMeta = {
-  title: 'One Coffee - 今日の気分でコーヒーを提案',
-  description: '愛犬バリスタが今日の気分にぴったりのコーヒーを提案してくれるアプリ「One Coffee」',
+  title: `${WAN_COFFEE} - 今日の気分でコーヒーを提案`,
+  description: `愛犬バリスタが今日の気分にぴったりのコーヒーを提案してくれるアプリ「${WAN_COFFEE}」`,
   ogImage: 'https://one-coffee-honyo.vercel.app/images/ogp.jpg',
 };
 
@@ -29,7 +30,7 @@ const metaTags = computed(
 );
 
 useHead({
-  title: `${currentMeta.value.title} | One Coffee`,
+  title: `${currentMeta.value.title} | ${WAN_COFFEE}`,
   meta: metaTags.value,
   link: [{ rel: 'icon', type: 'image/png', href: '/favicon.ico' }],
 });

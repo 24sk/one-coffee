@@ -2,14 +2,23 @@
 import type { RecommendResponse } from '~/types/recommend';
 import BaseSection from '~/components/BaseSection.vue';
 
+// 状態管理
 const moodStore = useMoodStore();
 const recommendStore = useRecommendStore();
+
+// コンポーザブル
 const toast = useToast();
 const router = useRouter();
+const { addFavorite, removeFavorite } = useFavorite();
 
+/** トッピングセクションの参照 */
 const toppingSectionRef = ref<HTMLElement | null>(null);
+/** インターセクションオブザーバー */
 const observer = ref<IntersectionObserver | null>(null);
+/** トースト表示フラグ */
 const hasShownToast = ref(false);
+/** お気に入りフラグ */
+const isFavorite = ref(false);
 
 /** スライダー表示項目 */
 const sliderItems = useTasteSliderItems(computed(() => recommendation.value));
@@ -133,6 +142,42 @@ const showFeedbackToast = () => {
   });
 };
 
+/** お気に入りボタンをクリック */
+const toggleFavorite = async () => {
+  const original = isFavorite.value;
+  isFavorite.value = !original;
+
+  try {
+    if (isFavorite.value) {
+      await addFavorite({
+        recommendation: recommendation.value!,
+        moods: moodStore.moods || [],
+        freeText: moodStore.freeText || '',
+      });
+    } else {
+      await removeFavorite({
+        recommendationId: recommendation.value!.id!,
+      });
+    }
+
+    toast.add({
+      title: isFavorite.value ? 'お気に入りに追加しました' : 'お気に入りから削除しました',
+      icon: isFavorite.value ? 'i-lucide-heart-plus' : 'i-lucide-heart-minus',
+      color: isFavorite.value ? 'error' : 'neutral',
+    });
+  } catch (err) {
+    // 失敗時は状態を元に戻す
+    isFavorite.value = original;
+
+    toast.add({
+      title: 'エラー',
+      description: (err as Error)?.message ?? 'お気に入り登録に失敗しました',
+      icon: 'i-lucide-alert-triangle',
+      color: 'error',
+    });
+  }
+};
+
 // 値を配列に変換（閲覧モード用）
 const getStepValues = (value: number) => Array.from({ length: value }, (_, i) => i + 1);
 </script>
@@ -140,13 +185,24 @@ const getStepValues = (value: number) => Array.from({ length: value }, (_, i) =>
 <template>
   <UContainer>
     <UCard v-if="recommendation" class="mx-auto max-w-2xl space-y-6 rounded-2xl shadow-lg">
-      <!-- ヘッダー -->
       <template #header>
-        <div class="space-y-1 text-center">
-          <h2 class="text-2xl font-bold text-gray-900">
-            <UIcon name="i-lucide-coffee" class="text-brown-500 mr-2 inline" />
+        <div class="relative space-y-2 text-center">
+          <UButton
+            size="md"
+            variant="ghost"
+            color="neutral"
+            :icon="isFavorite ? 'i-lucide-heart' : 'i-lucide-heart-plus'"
+            @click="toggleFavorite"
+            class="absolute top-0 right-0"
+            :class="{ 'text-red-500': isFavorite }"
+          />
+
+          <!-- コーヒー名 -->
+          <h2 class="text-xl font-bold text-gray-900 sm:text-2xl">
             {{ recommendation.coffeeName }}
           </h2>
+
+          <!-- ローストラベル -->
           <UBadge color="primary" variant="outline" class="rounded-full font-bold">
             {{ recommendation.roast }} / ホット / アイス
           </UBadge>

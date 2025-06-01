@@ -1,12 +1,12 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
 import { feedbackRequestSchema } from '~/shared/schemas/feedback';
 import { randomUUID } from 'crypto';
-import type { Database } from '~/supabase/schema';
+import type { Database } from '~/types/db';
 import type { InsertUserFeedback } from '~/types/db';
 
 /**
  * フィードバックを保存する
- * 
+ *
  * @param event イベントオブジェクト
  * @returns 成功メッセージ
  */
@@ -19,24 +19,27 @@ export default defineEventHandler(async (event) => {
 
   const body = await readValidatedBody(event, feedbackRequestSchema.parse);
 
+  const { data: existing } = await client
+    .from('recommendation_results')
+    .select('id')
+    .eq('id', body.recommendation?.id!)
+    .maybeSingle();
 
   // おすすめコーヒー保存
-  if (body.recommendation) {
+  if (!existing) {
     const r = body.recommendation;
-    const { error: insertError } = await client
-      .from('recommendation_results')
-      .insert({
-        id: r.id ?? randomUUID(),
-        coffee_name: r.coffeeName,
-        subtitle: r.subtitle,
-        roast: r.roast,
-        roast_level: r.roastLevel,
-        acidity: r.acidity,
-        body: r.body,
-        beans_summary: r.beans.map((b) => `${b.origin}${b.ratio}`).join(', '),
-        toppings_summary: r.toppings.join(', '),
-        comment: r.comment,
-      });
+    const { error: insertError } = await client.from('recommendation_results').insert({
+      id: r.id ?? randomUUID(),
+      coffee_name: r.coffeeName,
+      subtitle: r.subtitle,
+      roast: r.roast,
+      roast_level: r.roastLevel,
+      acidity: r.acidity,
+      body: r.body,
+      beans_summary: r.beans.map((b) => `${b.origin}${b.ratio}`).join(', '),
+      toppings_summary: r.toppings.join(', '),
+      comment: r.comment,
+    });
 
     if (insertError) {
       throw createError({
