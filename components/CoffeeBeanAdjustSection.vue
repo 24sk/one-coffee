@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CoffeeBeanPieChart from '~/components/CoffeeBeanPieChart.vue';
-import { BEAN_COLORS } from '~/shared/constants';
+import { BEAN_COLORS } from '../shared/constants';
 import type { Bean } from '~/types';
 
 const props = defineProps<{

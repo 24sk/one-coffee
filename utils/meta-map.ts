@@ -1,13 +1,13 @@
-import { WAN_COFFEE } from '~/shared/constants';
+import { WAN_COFFEE } from '../shared/constants';
 
 export interface PageMetaInfo {
-    title: string;
-    description?: string;
-    ogImage?: string;
-  }
-  
-  export const pageMetaMap: Record<string, PageMetaInfo> = {
-    '/': {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+export const pageMetaMap: Record<string, PageMetaInfo> = {
+  '/': {
     title: `${WAN_COFFEE} - 今日の気分でコーヒーを提案`,
     description: `愛犬バリスタが今日の気分にぴったりのコーヒーを提案してくれるアプリ「${WAN_COFFEE}」`,
     ogImage: 'https://one-coffee-honyo.vercel.app/images/ogp.jpg',
@@ -28,5 +28,4 @@ export interface PageMetaInfo {
     title: '調整',
     description: '好みに合わせて調整しましょう。',
   },
-  };
-  
+};

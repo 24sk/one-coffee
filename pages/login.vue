@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { WAN_COFFEE } from '~/shared/constants';
+import { WAN_COFFEE } from '../shared/constants';
 
 definePageMeta({
   layout: 'minimal',
