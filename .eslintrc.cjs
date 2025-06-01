@@ -13,7 +13,7 @@ module.exports = {
     ecmaVersion: 2020,
     extraFileExtensions: ['.vue'], // .vueファイルも対象に含める
     ecmaFeatures: { jsx: false }, // JSXを使わない場合
-    project: './tsconfig.json', // ※型チェックを伴うルール用。必要に応じて有効化
+    // project: './tsconfig.json', // ※型チェックを伴うルール用。必要に応じて有効化
   },
   // 推奨設定を拡張
   extends: [
