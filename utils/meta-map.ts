@@ -1,4 +1,4 @@
-import { WAN_COFFEE } from '../shared/constants';
+import { WAN_COFFEE } from '~/shared/constants';
 
 export interface PageMetaInfo {
   title: string;

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { PINIA } from '../shared/constants';
+import { PINIA } from '~/shared/constants';
 import type { RecommendResponse } from '~/types/recommend';
 
 /** ローカルストレージのキー */

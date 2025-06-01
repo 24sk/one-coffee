@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { StepperItem, NavigationMenuItem } from '@nuxt/ui';
-import { baseItems, WAN_COFFEE } from '../shared/constants';
+import { baseItems, WAN_COFFEE } from '~/shared/constants';
 
 const route = useRoute();
 const moodStore = useMoodStore();

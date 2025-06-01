@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-import { WAN_COFFEE } from './shared/constants';
+import { WAN_COFFEE } from '~/shared/constants';
 
 const route = useRoute();
 
