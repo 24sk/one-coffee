@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui';
+import { userMenuItems } from '~/shared/constants';
 
 defineProps<{
   collapsed?: boolean;
@@ -20,20 +21,11 @@ const items = computed<DropdownMenuItem[][]>(() => [
       },
     },
   ],
-  [
-    {
-      label: 'Profile',
-      icon: 'i-lucide-user',
-    },
-    {
-      label: 'Billing',
-      icon: 'i-lucide-credit-card',
-    },
-    {
-      label: 'Settings',
-      icon: 'i-lucide-settings',
-    },
-  ],
+  userMenuItems.map(({ label, icon, to }) => ({
+    label,
+    icon,
+    to,
+  })),
   [
     {
       label: 'Log out',

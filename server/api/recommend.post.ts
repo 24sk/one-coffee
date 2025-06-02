@@ -3,6 +3,7 @@ import type { RecommendRequest, RecommendResponse } from '~/types/recommend';
 import { buildPrompt } from '~/server/util';
 import { randomUUID } from 'crypto';
 import OpenAI from 'openai';
+import { recommend } from '../data/recommend';
 
 const openai = new OpenAI({
   apiKey: useRuntimeConfig().openai.apiKey,
@@ -15,6 +16,10 @@ const openai = new OpenAI({
  */
 export default defineEventHandler(async (event): Promise<RecommendResponse> => {
   const body = await readValidatedBody<RecommendRequest>(event, recommendRequestSchema.parse);
+
+  // 開発環境ではテストデータを返す
+  // if (process.env.NODE_ENV === 'development') return recommend;
+
   const recommendationId = randomUUID();
 
   const prompt = buildPrompt(body);

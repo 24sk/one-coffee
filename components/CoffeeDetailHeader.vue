@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import type { RecommendResponse } from '~/types';
+import type {
+  FavoriteWithParsedRecommendation,
+  FavoriteWithRecommendation,
+  RecommendResponse,
+} from '~/types';
 
 const props = defineProps<{
   recommendation: RecommendResponse;
@@ -14,8 +18,10 @@ const recommendation = computed(() => props.recommendation);
 
 onMounted(async () => {
   try {
-    const res = await $fetch<{ favorite: boolean }>(`/api/favorite/${props.recommendation.id}`);
-    isFavorite.value = res.favorite;
+    const res = await $fetch<FavoriteWithParsedRecommendation>(
+      `/api/favorite/${props.recommendation.id}`
+    );
+    isFavorite.value = !!res;
   } catch (e) {
     toast.add({
       title: 'エラー',
@@ -63,25 +69,27 @@ const toggleFavorite = async () => {
 };
 </script>
 <template>
-  <div class="relative space-y-2 text-center">
-    <UButton
-      size="md"
-      variant="ghost"
-      color="neutral"
-      :icon="isFavorite ? 'i-lucide-heart' : 'i-lucide-heart-plus'"
-      @click="toggleFavorite"
-      class="absolute top-0 right-0"
-      :class="{ 'text-red-500': isFavorite }"
-    />
-
-    <!-- コーヒー名 -->
-    <h2 class="text-xl font-bold text-gray-900 sm:text-2xl">
-      {{ recommendation.coffeeName }}
-    </h2>
+  <div class="space-y-2">
+    <!-- タイトル行：お気に入りボタンとコーヒー名 -->
+    <div class="flex items-start justify-between gap-2">
+      <h2 class="flex-1 text-xl font-bold break-words text-gray-900 sm:text-2xl">
+        {{ recommendation.coffeeName }}
+      </h2>
+      <UButton
+        size="md"
+        variant="ghost"
+        color="neutral"
+        :icon="isFavorite ? 'i-lucide-heart' : 'i-lucide-heart-plus'"
+        @click="toggleFavorite"
+        :class="{ 'text-red-500': isFavorite }"
+      />
+    </div>
 
     <!-- ローストラベル -->
-    <UBadge color="primary" variant="outline" class="rounded-full font-bold">
-      {{ recommendation.roast }} / ホット / アイス
-    </UBadge>
+    <div class="text-center">
+      <UBadge color="primary" variant="outline" class="rounded-full font-bold">
+        {{ recommendation.roast }} / ホット / アイス
+      </UBadge>
+    </div>
   </div>
 </template>

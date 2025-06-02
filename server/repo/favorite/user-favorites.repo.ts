@@ -1,7 +1,7 @@
-import { Tables, UserFavoriteKeys } from '~/types';
+import { FavoriteWithRecommendation, Tables, UserFavoriteKeys } from '~/types';
 import { BaseRepository } from '../base.repo';
 
-/** ユーザーのお気に入りを管理するリポジト */
+/** ユーザーのお気に入りを管理するリポジトリ */
 export class UserFavoritesRepository extends BaseRepository<'user_favorites'> {
   protected readonly tableName = 'user_favorites';
 
@@ -14,11 +14,29 @@ export class UserFavoritesRepository extends BaseRepository<'user_favorites'> {
    */
   async findByRecommendationId(
     userFavoriteKeys: UserFavoriteKeys
-  ): Promise<Tables['user_favorites']['Row'] | null> {
+  ): Promise<FavoriteWithRecommendation | null> {
     const { recommendation_id, user_id } = userFavoriteKeys;
+
     const { data, error } = await this.client
       .from(this.tableName)
-      .select('*')
+      .select(
+        `
+       *,
+       recommendation:recommendation_results (
+         id,
+         coffee_name,
+         subtitle,
+         roast,
+         roast_level,
+         acidity,
+         body,
+         beans_summary,
+         toppings_summary,
+         comment,
+         created_at
+       )
+     `
+      )
       .eq('recommendation_id', recommendation_id)
       .eq('user_id', user_id)
       .maybeSingle();
@@ -27,7 +45,43 @@ export class UserFavoritesRepository extends BaseRepository<'user_favorites'> {
       throw new Error(`Failed to find favorite: ${error.message}`);
     }
 
-    return data;
+    return data as FavoriteWithRecommendation | null;
+  }
+
+  /**
+   * ユーザーのお気に入り（おすすめ詳細付き）を全件取得
+   * @param userId ユーザーID
+   * @returns お気に入りリスト
+   */
+  async findWithRecommendationByUserId(userId: string): Promise<FavoriteWithRecommendation[]> {
+    const { data, error } = await this.client
+      .from(this.tableName)
+      .select(
+        `
+       *,
+       recommendation:recommendation_results (
+         id,
+         coffee_name,
+         subtitle,
+         roast,
+         roast_level,
+         acidity,
+         body,
+         beans_summary,
+         toppings_summary,
+         comment,
+         created_at
+       )
+     `
+      )
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      throw new Error(`Failed to fetch favorites with recommendations: ${error.message}`);
+    }
+
+    return data as FavoriteWithRecommendation[];
   }
 
   /**

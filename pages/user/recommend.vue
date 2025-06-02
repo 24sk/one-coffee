@@ -140,9 +140,6 @@ const showFeedbackToast = () => {
     ],
   });
 };
-
-// 値を配列に変換（閲覧モード用）
-const getStepValues = (value: number) => Array.from({ length: value }, (_, i) => i + 1);
 </script>
 
 <template>
@@ -225,20 +222,9 @@ const getStepValues = (value: number) => Array.from({ length: value }, (_, i) =>
     </UCard>
 
     <div v-else-if="isLoading" class="py-10 text-center text-sm text-gray-500">
-      <span
-        v-for="(char, index) in 'バリスタがコーヒーを準備中です...'.split('')"
-        :key="index"
-        class="animate-wave inline-block"
-        :style="{ animationDelay: `${index * 0.1}s` }"
-      >
-        {{ char }}
-      </span>
-
-      <!-- ホニョのGIFを追加 -->
-      <img
-        src="/images/honyo_pc_search.gif"
-        alt="ホニョが検索中"
-        class="mx-auto mt-6 h-32 w-auto"
+      <LoadingIndicator
+        message="バリスタがコーヒーを準備中です..."
+        image="/images/honyo_pc_search.gif"
       />
     </div>
 

@@ -52,6 +52,7 @@ export const useFavorite = () => {
     }
   };
 
+  /** お気に入り一覧を取得する */
   const listFavorites = async () => {
     try {
       return await $fetch<FavoriteResponse[]>('/api/favorite');

@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { Database, TableInsert, TableRow, TableUpdate } from '~/types';
 
+/** ベースリポジトリ */
 export abstract class BaseRepository<
   TableName extends keyof Database['public']['Tables'],
   IdField extends keyof TableRow<TableName> = 'id',
@@ -36,6 +37,13 @@ export abstract class BaseRepository<
       .maybeSingle();
     if (error) throw new Error(`${String(this.tableName)} find failed: ${error.message}`);
     return data as TableRow<TableName> | null;
+  }
+
+  /** 一覧取得（全件） */
+  async findAll(): Promise<TableRow<TableName>[]> {
+    const { data, error } = await this.client.from(this.tableName).select('*');
+    if (error) throw new Error(`${String(this.tableName)} findAll failed: ${error.message}`);
+    return data as TableRow<TableName>[] | [];
   }
 
   async delete(id: TableRow<TableName>[IdField]) {

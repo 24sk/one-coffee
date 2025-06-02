@@ -9,6 +9,7 @@ export interface ApiData {
   key: string;
   url: string;
   opts?: APIOption;
+  default?: unknown;
 }
 
 /** APIデータ（ボディ付き） */

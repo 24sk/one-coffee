@@ -8,7 +8,8 @@ import type { ApiData } from '~/types';
  * @returns データ、ローディング状態、エラー、更新関数
  */
 export const useApiData = <T>(apiData: ApiData) => {
-  const { key, url, opts } = apiData;
+  const { key, url, opts, default: defaultValue } = apiData;
+
   const fetcher = async (): Promise<T> => {
     try {
       const response = await $fetch<T>(url);
@@ -22,6 +23,7 @@ export const useApiData = <T>(apiData: ApiData) => {
   const { data, pending, error, refresh } = useAsyncData<T>(key, fetcher, {
     server: opts?.server ?? true,
     lazy: opts?.immediate === false,
+    default: defaultValue ? () => defaultValue as T : undefined,
   });
 
   return { data, pending, error, refresh };

@@ -96,9 +96,6 @@ const goToNext = () => {
   </div>
 </template>
 <style scoped>
-.instagram-tag {
-  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-}
 .free-text-label {
   margin-bottom: -15px;
 }
