@@ -69,10 +69,10 @@ const confirmDelete = async () => {
         size="xs"
         color="primary"
         variant="ghost"
-        @click="navigateTo({ path: `/user/menu/favorite/${favorite.recommendation.id}/edit` })"
+        @click.stop="navigateTo({ path: `/user/menu/favorite/${favorite.recommendation.id}/edit` })"
       />
       <UButton
-        @click="isDialogOpen = true"
+        @click.stop="isDialogOpen = true"
         icon="i-lucide-heart-minus"
         size="xs"
         color="neutral"
