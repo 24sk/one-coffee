@@ -1,8 +1,7 @@
-import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
+import { serverSupabaseUser } from '#supabase/server';
 import { feedbackRequestSchema } from '~/shared/schemas/feedback';
-import { randomUUID } from 'crypto';
-import type { Database } from '~/types/db';
 import type { InsertUserFeedback } from '~/types/db';
+import { createRepositories } from '~/utils/repository.factory';
 
 /**
  * フィードバックを保存する
@@ -11,61 +10,41 @@ import type { InsertUserFeedback } from '~/types/db';
  * @returns 成功メッセージ
  */
 export default defineEventHandler(async (event) => {
-  const client = await serverSupabaseClient<Database>(event);
   const user = await serverSupabaseUser(event);
   if (!user) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' });
   }
 
-  const body = await readValidatedBody(event, feedbackRequestSchema.parse);
+  const { recommendation, moods, freeText, rating } = await readValidatedBody(
+    event,
+    feedbackRequestSchema.parse
+  );
 
-  const { data: existing } = await client
-    .from('recommendation_results')
-    .select('id')
-    .eq('id', body.recommendation?.id!)
-    .maybeSingle();
+  const { recommendationRepository, userFeedbacksRepository } = await createRepositories(event);
 
-  // おすすめコーヒー保存
-  if (!existing) {
-    const r = body.recommendation;
-    const { error: insertError } = await client.from('recommendation_results').insert({
-      id: r.id ?? randomUUID(),
-      coffee_name: r.coffeeName,
-      subtitle: r.subtitle,
-      roast: r.roast,
-      roast_level: r.roastLevel,
-      acidity: r.acidity,
-      body: r.body,
-      beans_summary: r.beans.map((b) => `${b.origin}${b.ratio}`).join(', '),
-      toppings_summary: r.toppings.join(', '),
-      comment: r.comment,
-    });
-
-    if (insertError) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: `recommendation_results登録失敗: ${insertError.message}`,
-      });
-    }
-  }
+  await recommendationRepository.findOrInsert({
+    id: recommendation.id!,
+    coffee_name: recommendation.coffeeName,
+    subtitle: recommendation.subtitle,
+    roast: recommendation.roast,
+    roast_level: recommendation.roastLevel,
+    acidity: recommendation.acidity,
+    body: recommendation.body,
+    beans_summary: recommendation.beans.map((b) => `${b.origin}${b.ratio}`).join(', '),
+    toppings_summary: recommendation.toppings.join(', '),
+    comment: recommendation.comment,
+  });
 
   // フィードバック保存
   const feedback: InsertUserFeedback = {
     user_id: user.id,
-    recommendation_id: body.recommendation?.id,
-    moods: body.moods,
-    free_text: body.freeText ?? '',
-    rating: body.rating,
+    recommendation_id: recommendation?.id,
+    moods: moods,
+    free_text: freeText ?? '',
+    rating: rating,
   };
 
-  const { error } = await client.from('user_feedbacks').insert(feedback);
-
-  if (error) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: `user_feedbacks登録失敗: ${error.message}`,
-    });
-  }
+  await userFeedbacksRepository.insert(feedback);
 
   return { success: true };
 });
