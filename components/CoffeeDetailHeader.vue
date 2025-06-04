@@ -71,19 +71,19 @@ const toggleFavorite = async () => {
 <template>
   <div class="space-y-2">
     <!-- タイトル行：お気に入りボタンとコーヒー名 -->
-    <div class="flex items-start justify-between gap-2">
-      <h2 class="flex-1 text-xl font-bold break-words text-gray-900 sm:text-2xl">
-        {{ recommendation.coffeeName }}
-      </h2>
-      <UButton
+    <!-- <div class="flex items-center justify-center"> -->
+    <h2 class="flex-1 text-center text-xl font-bold break-words text-gray-900 sm:text-2xl">
+      {{ recommendation.coffeeName }}
+    </h2>
+    <!-- <UButton
         size="md"
         variant="ghost"
         color="neutral"
         :icon="isFavorite ? 'i-lucide-heart' : 'i-lucide-heart-plus'"
         @click="toggleFavorite"
         :class="{ 'text-red-500': isFavorite }"
-      />
-    </div>
+      /> -->
+    <!-- </div> -->
 
     <!-- ローストラベル -->
     <div class="text-center">

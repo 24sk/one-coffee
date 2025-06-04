@@ -9,6 +9,7 @@ const recommendStore = useRecommendStore();
 // コンポーザブル
 const toast = useToast();
 const router = useRouter();
+const { addFavorite } = useFavorite();
 
 /** トッピングセクションの参照 */
 const toppingSectionRef = ref<HTMLElement | null>(null);
@@ -140,6 +141,26 @@ const showFeedbackToast = () => {
     ],
   });
 };
+
+/** お気に入りボタンをクリック */
+const handleFavorite = async () => {
+  if (!recommendation.value) return;
+
+  try {
+    await addFavorite({
+      recommendation: recommendation.value,
+      moods: moodStore.moods || [],
+      freeText: moodStore.freeText || '',
+    });
+    // 保存完了ページへリダイレクト
+    router.push('/user/saved');
+  } catch (err) {
+    toast.add({
+      title: 'お気に入りに追加に失敗しました',
+      description: 'もう一度お試しください',
+    });
+  }
+};
 </script>
 
 <template>
@@ -210,15 +231,29 @@ const showFeedbackToast = () => {
         </div>
       </BaseSection>
 
-      <!-- 調整するボタン -->
-      <UButton
-        size="lg"
-        class="w-full max-w-xs rounded-full font-bold"
-        @click="router.push('/user/adjust')"
-        trailing-icon="i-lucide-arrow-right"
-      >
-        <span class="block w-full text-center">調整する</span>
-      </UButton>
+      <!-- 調整・保存ボタン -->
+      <div class="flex flex-col items-center gap-4">
+        <UButton
+          size="lg"
+          class="w-full max-w-xs rounded-full font-bold"
+          @click="router.push('/user/adjust')"
+          trailing-icon="i-lucide-arrow-right"
+        >
+          <span class="block w-full text-center">自分好みに調整する</span>
+        </UButton>
+
+        <UButton
+          size="lg"
+          class="w-full max-w-xs rounded-full font-bold"
+          :class="'bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white'"
+          color="primary"
+          variant="solid"
+          @click="handleFavorite"
+          trailing-icon="i-lucide-heart"
+        >
+          <span class="block w-full text-center">お気に入りに保存する</span>
+        </UButton>
+      </div>
     </UCard>
 
     <div v-else-if="isLoading" class="py-10 text-center text-sm text-gray-500">

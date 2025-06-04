@@ -13,4 +13,13 @@ export class RecommendationRepository extends BaseRepository<'recommendation_res
     const existing = await super.findById(data.id!);
     if (!existing) await super.insert(data);
   }
+
+  /**
+   * おすすめコーヒーを更新する
+   * @param id おすすめコーヒーのID
+   * @param data おすすめコーヒーのデータ
+   */
+  async update(id: string, data: Tables['recommendation_results']['Update']) {
+    await super.update(id, data);
+  }
 }
