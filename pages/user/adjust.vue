@@ -2,11 +2,33 @@
 const recommendStore = useRecommendStore();
 const recommendation = computed(() => recommendStore.recommendation);
 
+const toast = useToast();
+
 /** スライダー表示項目 */
 const sliderItems = useTasteSliderItems(computed(() => recommendation.value));
 
 // トッピングの状態管理
-const selectedToppings = ref<string[]>([]);
+const selectedToppings = ref<string[]>(recommendation.value?.toppings ?? []);
+
+/**  ユーザーの好みを保存する */
+const saveRecommendation = async () => {
+  if (!recommendation.value) return;
+
+  try {
+    await $fetch('/api/recommendation-results', {
+      method: 'POST',
+      body: {
+        ...recommendation.value,
+        toppings: selectedToppings.value,
+      },
+    });
+
+    toast.add({ title: 'お好みの調整を保存しました', color: 'primary', icon: 'i-lucide-check' });
+  } catch (e) {
+    console.error('保存失敗:', e);
+    toast.add({ title: '保存に失敗しました', color: 'error', icon: 'i-lucide-alert-triangle' });
+  }
+};
 </script>
 
 <template>
@@ -53,15 +75,21 @@ const selectedToppings = ref<string[]>([]);
       <!-- トッピング -->
       <BaseSection v-if="recommendation.toppings.length" title="トッピング" icon="i-lucide-coffee">
         <div ref="toppingSectionRef" class="grid gap-3">
-          <UCheckbox
-            v-for="(topping, index) in recommendation.toppings"
-            :key="index"
-            :label="topping"
+          <UCheckboxGroup
             variant="card"
-            v-model:checked="selectedToppings"
+            v-model="selectedToppings"
+            :items="recommendation.toppings"
           />
         </div>
       </BaseSection>
+      <UButton
+        size="lg"
+        class="w-full max-w-xs rounded-full font-bold"
+        @click="saveRecommendation"
+        trailing-icon="i-lucide-pin"
+      >
+        <span class="block w-full text-center">保存する</span>
+      </UButton>
     </UCard>
   </UContainer>
 </template>
